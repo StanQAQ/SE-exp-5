@@ -84,7 +84,9 @@ public class MainApplication {
                 String notFound = "404 - file not found";
                 exchange.sendResponseHeaders(404, notFound.length());
                 try (OutputStream os = exchange.getResponseBody()) {
-                    os.write(notFound.getBytes());
+                    // 修改: 明确指定字符集为 UTF-8
+                    os.write(notFound.getBytes(StandardCharsets.UTF_8));
+                    // 原代码: os.write(notFound.getBytes());
                 }
                 return;
             }
@@ -204,10 +206,17 @@ public class MainApplication {
                     }
                 }
                 return all.stream().filter(filter::matches).collect(Collectors.toList());
+            // 修改: 捕获具体的异常，避免捕获范围过大
+            } catch (UnsupportedEncodingException | RuntimeException ex) {
+                logger.log(Level.WARNING, "Error filtering transactions", ex);
+                return all;
+            }
+            /* 原代码:
             } catch (Exception ex) {
                 logger.log(Level.WARNING, "Error filtering transactions", ex);
                 return all;
             }
+            */
         }
 
         private void handlePost(HttpExchange exchange) throws IOException {

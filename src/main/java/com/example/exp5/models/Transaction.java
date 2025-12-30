@@ -46,7 +46,9 @@ public class Transaction {
 		String id = m.getOrDefault("id", UUID.randomUUID().toString());
 		LocalDate date = LocalDate.parse(m.getOrDefault("date", LocalDate.now().toString()));
 		double amount = 0.0;
-		try { amount = Double.parseDouble(m.getOrDefault("amount", "0")); } catch (Exception ignored) {}
+		// 修改: 只捕获 NumberFormatException
+		try { amount = Double.parseDouble(m.getOrDefault("amount", "0")); } catch (NumberFormatException ignored) { /* ignore */ }
+		// 原代码: try { amount = Double.parseDouble(m.getOrDefault("amount", "0")); } catch (Exception ignored) {}
 		String category = m.getOrDefault("category", "other");
 		String type = m.getOrDefault("type", "expense");
 		String desc = m.getOrDefault("description", "");
@@ -56,7 +58,9 @@ public class Transaction {
 			try {
 				LocalDateTime at = LocalDateTime.parse(added, TF);
 				return new Transaction(id, date, amount, category, type, desc, at);
-			} catch (Exception ignored) { }
+			// 修改: 只捕获 DateTimeParseException
+			} catch (java.time.format.DateTimeParseException ignored) { /* ignore */ }
+			// 原代码: } catch (Exception ignored) { }
 		}
 		return new Transaction(id, date, amount, category, type, desc);
 	}
@@ -74,13 +78,18 @@ public class Transaction {
 		String id = parts[0];
 		LocalDate d = LocalDate.parse(parts[1], F);
 		double amount = 0.0;
-		try { amount = Double.parseDouble(parts[2]); } catch (Exception ignored) {}
+		// 修改: 只捕获 NumberFormatException
+		try { amount = Double.parseDouble(parts[2]); } catch (NumberFormatException ignored) { /* ignore */ }
+		// 原代码: try { amount = Double.parseDouble(parts[2]); } catch (Exception ignored) {}
+
 		String category = parts[3];
 		String type = parts[4];
 		String desc = parts[5];
 		LocalDateTime at = null;
 		if (parts.length >= 7 && parts[6] != null && !parts[6].isEmpty()) {
-			try { at = LocalDateTime.parse(parts[6], TF); } catch (Exception ignored) {}
+			// 修改: 只捕获 DateTimeParseException
+			try { at = LocalDateTime.parse(parts[6], TF); } catch (java.time.format.DateTimeParseException ignored) { /* ignore */ }
+			// 原代码: try { at = LocalDateTime.parse(parts[6], TF); } catch (Exception ignored) {}
 		}
 		return new Transaction(id, d, amount, category, type, desc, at);
 	}
