@@ -211,7 +211,15 @@ public class MainApplication {
         }
 
         private void handlePost(HttpExchange exchange) throws IOException {
-            String body = new String(exchange.getRequestBody().readAllBytes(), StandardCharsets.UTF_8);
+            ByteArrayOutputStream buffer = new ByteArrayOutputStream();
+            byte[] data = new byte[1024];
+            int nRead;
+            InputStream is = exchange.getRequestBody();
+            while ((nRead = is.read(data, 0, data.length)) != -1) {
+                buffer.write(data, 0, nRead);
+            }
+            buffer.flush();
+            String body = new String(buffer.toByteArray(), StandardCharsets.UTF_8);
             Map<String, String> params = parseForm(body);
             Transaction t = Transaction.fromMap(params);
             repo.addTransaction(t);
