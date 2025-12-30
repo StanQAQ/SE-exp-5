@@ -1,0 +1,31 @@
+实验报告.md
+*.txt
+issues/
+
+# Maven
+target/
+*.log
+
+# IDE
+.vscode/
+.idea/
+*.iml
+.classpath
+.project
+.settings/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Tools (Experiment specific)
+sonar-scanner-*/
+sonarqube-*/
+spotbugs-*/
+
+# Coverage
+*.exec
+
+# Python
+__pycache__/
+*.pyc
